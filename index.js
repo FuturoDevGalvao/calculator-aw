@@ -1,5 +1,6 @@
 const buttons = document.querySelectorAll(".btn");
 const display = document.getElementById("display");
+const toolTip = document.querySelector(".tooltip");
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -39,6 +40,24 @@ function calc() {
   if (expression) {
     display.value = eval(expression);
   } else {
-    /* posterior ativação do aviso por tooltip */
+    showTooltip();
   }
+}
+
+function showTooltip() {
+  const message = "campo vazio, impossível calcular.";
+  toolTip.innerHTML = message;
+
+  toolTip.classList.add("message");
+  toolTip.classList.remove("slide-hide");
+  toolTip.classList.add("slide-show");
+
+  setTimeout(() => {
+    hideTooltip();
+  }, 2000);
+}
+
+function hideTooltip() {
+  toolTip.classList.remove("slide-show");
+  toolTip.classList.add("slide-hide");
 }
