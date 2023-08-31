@@ -4,6 +4,7 @@ const toolTip = document.querySelector(".tooltip");
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
+    btnPrees();
     const textContent = button.textContent;
 
     switch (textContent) {
@@ -60,4 +61,15 @@ function showTooltip() {
 function hideTooltip() {
   toolTip.classList.remove("slide-show");
   toolTip.classList.add("slide-hide");
+}
+
+function btnPrees() {
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      button.classList.add("btn-prees");
+      setTimeout(() => {
+        button.classList.remove("btn-prees");
+      }, 100);
+    });
+  });
 }
