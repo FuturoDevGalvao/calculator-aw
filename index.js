@@ -24,12 +24,34 @@ buttons.forEach((button) => {
 });
 
 function insert(textContent) {
-  const buttonsnNotAllowed = ["C", "="];
+  const expression = display.value + textContent;
+  const add = isCheckForAdd(expression.trim());
 
-  if (!buttonsnNotAllowed.includes(textContent)) {
+  console.log(add);
+
+  if (add) {
     display.value += textContent;
   }
 }
+
+const isCheckForAdd = (expression) => {
+  console.log("expression: " + expression);
+  console.log("penultimate char: " + expression.charAt(expression.length - 2));
+  console.log("last char: " + expression.charAt(expression.length - 1));
+
+  const penultimateChar = expression.charAt(expression.length - 2);
+  const lastChar = expression.charAt(expression.length - 1);
+  const operators = ["+", "-", "*", "/"];
+  const dot = ".";
+
+  if (operators.includes(penultimateChar) && operators.includes(lastChar)) {
+    return false;
+  }
+
+  return true;
+};
+
+const validate = (expression) => {};
 
 function clean() {
   display.value = "";
