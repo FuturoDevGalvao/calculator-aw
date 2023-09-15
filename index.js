@@ -37,18 +37,30 @@ const insert = (textContent) => {
 };
 
 const isCheckForAdd = (expression) => {
+  const firstChar = expression.charAt(0);
   const penultimateChar = expression.charAt(expression.length - 2);
   const lastChar = expression.charAt(expression.length - 1);
-  const operators = ["+", "-", "*", "/"];
+  const operators = ["+", "-", "*", "/", "%", "^"];
   const dot = ".";
 
-  if (operators.includes(penultimateChar) && operators.includes(lastChar)) {
-    return false;
-  }
+  const isOperatorInvalid =
+    operators.includes(firstChar) ||
+    (operators.includes(penultimateChar) && operators.includes(lastChar));
 
-  if (penultimateChar == dot && lastChar == dot) {
-    return false;
-  }
+  const isDotInvalid =
+    firstChar == dot || (penultimateChar == dot && lastChar == dot);
+
+  if (isOperatorInvalid) return false;
+
+  if (isDotInvalid) return false;
+
+  return true;
+};
+
+const isCheckForCalc = (expression) => {
+  const isDividerInvalid = expression.includes("/0");
+
+  if (isDividerInvalid) return false;
 
   return true;
 };
@@ -69,16 +81,17 @@ const calc = () => {
   let result;
 
   if (expression) {
-    result = eval(expression);
-    if (result == "Infinity") {
-      display.value = "erro! impossíel dividir por zero.";
-      showTooltip("erro! impossíel dividir por zero.");
-    } else {
+    const isCalculate = isCheckForCalc(expression);
+
+    if (isCalculate) {
+      result = eval(expression);
       display.value = result;
+    } else {
+      display.value = "";
+      showTooltip("erro! impossíel dividir por zero.");
     }
-  } else {
-    showTooltip("campo vazio, impossível calcular.");
-  }
+    
+  } else showTooltip("campo vazio, impossível calcular.");
 };
 
 const showTooltip = (message) => {
