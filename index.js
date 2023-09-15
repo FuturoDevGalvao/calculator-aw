@@ -43,8 +43,12 @@ const isCheckForAdd = (expression) => {
   const operators = ["+", "-", "*", "/", "%", "^"];
   const dot = ".";
 
+  const operatorsFiltred = operators.filter((op) => {
+    return op != "+" && op != "-";
+  });
+
   const isOperatorInvalid =
-    operators.includes(firstChar) ||
+    operatorsFiltred.includes(firstChar) ||
     (operators.includes(penultimateChar) && operators.includes(lastChar));
 
   const isDotInvalid =
@@ -90,7 +94,6 @@ const calc = () => {
       display.value = "";
       showTooltip("erro! impossíel dividir por zero.");
     }
-    
   } else showTooltip("campo vazio, impossível calcular.");
 };
 
