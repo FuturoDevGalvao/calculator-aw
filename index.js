@@ -2,6 +2,8 @@ const buttons = document.querySelectorAll(".btn");
 const display = document.getElementById("display");
 const toolTip = document.querySelector(".tooltip");
 
+const operators = ["+", "-", "*", "/", "%", "^"];
+
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
     btnPrees();
@@ -29,34 +31,56 @@ const performAction = (textContent) => {
   }
 };
 
+const alterBgcDisplay = (expression) => {
+  const expressionArray = expression.split("");
+  let countOperators = 0;
+
+  for (let e of expressionArray) 
+    if (operators.includes(e)) 
+      countOperators++;
+
+  if (countOperators > 1) 
+    display.style.backgroundColor = "#8ea063";
+  else 
+    display.style.backgroundColor = "#bccd95";
+};
+
 const insert = (textContent) => {
   const expression = display.value + textContent;
-  const add = isCheckForAdd(expression.trim());
+  const add = isCheckForAdd(expression);
 
-  if (add) display.value += textContent;
+  if (add) {
+    display.value = expression;
+    alterBgcDisplay(expression);
+  }
 };
 
 const isCheckForAdd = (expression) => {
   const firstChar = expression.charAt(0);
   const penultimateChar = expression.charAt(expression.length - 2);
   const lastChar = expression.charAt(expression.length - 1);
-  const operators = ["+", "-", "*", "/", "%", "^"];
   const dot = ".";
+  const operatorsFiltred =
+    operators.filter((op) => {
+     return op != "+" && op != "-";
+    });
 
-  const operatorsFiltred = operators.filter((op) => {
-    return op != "+" && op != "-";
-  });
+  const isDotInvalid =
+    firstChar == dot || (penultimateChar == dot && lastChar == dot);
 
   const isOperatorInvalid =
     operatorsFiltred.includes(firstChar) ||
     (operators.includes(penultimateChar) && operators.includes(lastChar));
 
-  const isDotInvalid =
-    firstChar == dot || (penultimateChar == dot && lastChar == dot);
+  const isDotAndOperatorInvalid =
+    (operators.includes(penultimateChar) && lastChar == dot) ||
+    (penultimateChar == dot && operators.includes(lastChar));
+
+  if (isDotInvalid) return false;
 
   if (isOperatorInvalid) return false;
 
-  if (isDotInvalid) return false;
+  if (isDotAndOperatorInvalid) return false;
 
   return true;
 };
@@ -71,6 +95,7 @@ const isCheckForCalc = (expression) => {
 
 const cleanAll = () => {
   display.value = "";
+  display.style.backgroundColor = "#bccd95";
 };
 
 const cleanOne = () => {
@@ -78,6 +103,8 @@ const cleanOne = () => {
   const expressionDecremented = expression.slice(0, -1);
 
   display.value = expressionDecremented;
+
+  alterBgcDisplay(expressionDecremented);
 };
 
 const calc = () => {
@@ -90,10 +117,12 @@ const calc = () => {
     if (isCalculate) {
       result = eval(expression);
       display.value = result;
+      alterBgcDisplay(result.toString());
     } else {
       display.value = "";
       showTooltip("erro! impossíel dividir por zero.");
     }
+
   } else showTooltip("campo vazio, impossível calcular.");
 };
 
@@ -106,7 +135,7 @@ const showTooltip = (message) => {
 
   setTimeout(() => {
     hideTooltip();
-  }, 2000);
+  }, 3000);
 };
 
 const hideTooltip = () => {
@@ -114,7 +143,7 @@ const hideTooltip = () => {
   toolTip.classList.add("slide-hide");
 };
 
-function btnPrees() {
+const btnPrees = () => {
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
       button.classList.add("btn-prees");
@@ -123,4 +152,4 @@ function btnPrees() {
       }, 100);
     });
   });
-}
+};
